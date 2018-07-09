@@ -70,7 +70,12 @@ class RPNLogLossMetric(mx.metric.EvalMetric):
         cls = pred[keep_inds, label]
 
         cls += 1e-14
-        cls_loss = -1 * np.log(cls)
+		
+		# focal loss mod
+		alpha=0.25
+		gamma=2
+        cls_loss = -1 * alpha * (1-cls)**gamma * np.log(cls)
+		
         cls_loss = np.sum(cls_loss)
         self.sum_metric += cls_loss
         self.num_inst += label.shape[0]
@@ -91,7 +96,12 @@ class RCNNLogLossMetric(mx.metric.EvalMetric):
         cls = pred[np.arange(label.shape[0]), label]
 
         cls += 1e-14
-        cls_loss = -1 * np.log(cls)
+		
+		# focal loss mod
+		alpha=0.25
+		gamma=2
+        cls_loss = -1 * alpha * (1-cls)**gamma * np.log(cls)
+		
         cls_loss = np.sum(cls_loss)
         self.sum_metric += cls_loss
         self.num_inst += label.shape[0]
