@@ -17,16 +17,17 @@ from data.vis import vis_detection
 from net.model import load_param, check_shape
 
 def box_to_rect(box_x, box_y, color, linewidth):
-    return plt.Rectangle(
-        (box_x[0], box_y[0]), box_x[1]-box_x[0], box_y[1]-box_y[0],
-        fill=False, edgecolor=color, linewidth=linewidth)
+	return plt.Rectangle(
+		(box_x[0], box_y[0]), box_x[1]-box_x[0], box_y[1]-box_y[0],
+		fill=False, edgecolor=color, linewidth=linewidth)
 
 # save the image with detections
 def save_result(image,det,thresh,class_names):
 	img=cv2.imread(image)
+	# BGR to RGB
+	b,g,r=cv2.split(img)
+	img=cv2.merge([r,g,b])
 	plt.imshow(img)
-	# w=np.size(img,1)
-	# h=np.size(img,0)
 	pycolors=list(colors.cnames.keys())
 	for [cls, conf, x1, y1, x2, y2] in det:
 		if cls > 0 and conf > thresh:
