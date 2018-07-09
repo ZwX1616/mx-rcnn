@@ -174,17 +174,31 @@ def get_coco(args):
     from imdb.coco import coco
     if not args.imageset:
         args.imageset = 'train2017'
+    args.rcnn_num_classes = len(coco.classes)
 
-    args.rcnn_num_classes = 2
     isets = args.imageset.split('+')
     roidb = []
     for iset in isets:
-        imdb = coco(iset, 'data', '/mnt/data/coco')
+        imdb = coco(iset, 'data', 'data/coco')
         imdb.filter_roidb()
         imdb.append_flipped_images()
         roidb.extend(imdb.roidb)
     return roidb
 
+def get_google_person(args):
+    from imdb.google_person import google_person
+    if not args.imageset:
+        args.imageset = 'train'
+    args.rcnn_num_classes = len(google_person.classes)
+
+    isets = args.imageset.split('+')
+    roidb = []
+    for iset in isets:
+        imdb = google_person(iset, '/devkit', '/devkit')
+        imdb.filter_roidb()
+        imdb.append_flipped_images()
+        roidb.extend(imdb.roidb)
+    return roidb
 
 def get_vgg16_train(args):
     from net.symbol_vgg import get_vgg_train
@@ -257,7 +271,8 @@ def get_resnet101_train(args):
 def get_dataset(dataset, args):
     datasets = {
         'voc': get_voc,
-        'coco': get_coco
+        'coco': get_coco,
+        'google_person': get_google_person
     }
     if dataset not in datasets:
         raise ValueError("dataset {} not supported".format(dataset))
